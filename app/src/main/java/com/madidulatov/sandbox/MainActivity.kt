@@ -1,4 +1,4 @@
-package com.madidulatov.examples
+package com.madidulatov.sandbox
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

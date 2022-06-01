@@ -1,4 +1,4 @@
-package com.madidulatov.examples
+package com.madidulatov.sandbox
 
 import org.junit.Test
 

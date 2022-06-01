@@ -12,7 +12,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Examples"
+rootProject.name = "Sandbox"
 include ':app'
 include ':services'
 include ':utils'
