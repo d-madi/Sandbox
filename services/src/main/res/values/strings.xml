@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Services</string>
     <string name="foreground_service_txt">Foreground Service</string>
+    <string name="start_timer_text">Start timer</string>
 </resources>

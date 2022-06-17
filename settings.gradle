@@ -16,3 +16,5 @@ rootProject.name = "Sandbox"
 include ':app'
 include ':services'
 include ':utils'
+include ':viewmodelexmpl'
+include ':spanexmpl'
