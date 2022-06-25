@@ -19,9 +19,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".foreground.ui.ForegroundServiceActivity" />
+        <activity android:name=".foreground.ui.TimerServiceActivity" />
 
-        <service android:name=".foreground.service.TimerService" />
+        <service android:name=".foreground.service.TimerService"
+            android:enabled="true"
+            android:exported="false"/>
+        <receiver android:name=".foreground.ui.TimerServiceActivity$TimerReceiver"
+            android:enabled="true"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

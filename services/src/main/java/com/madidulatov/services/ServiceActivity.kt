@@ -3,7 +3,7 @@ package com.madidulatov.services
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.madidulatov.services.foreground.ui.ForegroundServiceActivity
+import com.madidulatov.services.foreground.ui.TimerServiceActivity
 import com.madidulatov.utils.extentions.makeStartIntent
 import com.madidulatov.utils.extentions.onClick
 
@@ -14,7 +14,7 @@ class ServiceActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.activity_service_foreground_btn).onClick {
             startActivity(
-                makeStartIntent(ForegroundServiceActivity::class.java) {
+                makeStartIntent(TimerServiceActivity::class.java) {
                     putExtra("Test", "Test")
                 }
             )
