@@ -17,7 +17,7 @@ import com.madidulatov.services.foreground.service.TimerService
 import com.madidulatov.utils.extentions.onClick
 
 /**
- * TODO add docs
+ * Just mini draft. Tried foreground services with example of mini timer
  */
 const val TIMER_ACTION = "timer_action"
 
