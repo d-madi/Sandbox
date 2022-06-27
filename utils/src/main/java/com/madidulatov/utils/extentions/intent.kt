@@ -10,7 +10,7 @@ inline fun buildIntent(intentBlock: Intent.() -> Unit): Intent {
     return intent
 }
 
-fun <T : AppCompatActivity> AppCompatActivity.makeStartIntent(
+fun <T : AppCompatActivity> AppCompatActivity.startActivity(
     activityClass: Class<T>,
     extrasBlock: (Intent.() -> Unit)? = null
 ): Intent {

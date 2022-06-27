@@ -87,8 +87,7 @@ class TimerService : Service(), CoroutineScope {
 
     private fun updateBroadcast() {
         sendBroadcast(
-            Intent(TIMER_ACTION)
-                .putExtra(TIME, currentTimeMillis)
+            Intent(TIMER_ACTION).putExtra(TIME, currentTimeMillis)
         )
         notificationHelper.updateNotification(TIMER_SERVICE_NOTIFICATION_ID, UPDATE_TEXT_FORMAT.format(currentTimeMillis.secondsToTimeString()))
     }

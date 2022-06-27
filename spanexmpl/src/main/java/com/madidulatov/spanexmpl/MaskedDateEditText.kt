@@ -7,7 +7,7 @@ import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.content.ContextCompat
+import com.madidulatov.utils.extentions.color
 
 private typealias Digit = MaskedDateEditText.TemplateString.Symbol.Digit
 private typealias Placeholder = MaskedDateEditText.TemplateString.Symbol.Placeholder
@@ -20,19 +20,19 @@ class MaskedDateEditText @JvmOverloads constructor(
 
     private val template: TemplateString = TemplateString(
         arrayOf(
-            Digit('Д'), Digit('Д'),
+            Digit('D'), Digit('D'),
             Placeholder('.'),
-            Digit('М'), Digit('М'),
+            Digit('M'), Digit('M'),
             Placeholder('.'),
-            Digit('Г'), Digit('Г'), Digit('Г'), Digit('Г')
+            Digit('Y'), Digit('Y'), Digit('Y'), Digit('Y')
         )
     )
 
     private val watcher = Watcher()
-    private val red = ContextCompat.getColor(context, android.R.color.holo_red_dark)
+    private val unfilledTextColor = context.color(R.color.teal_700)
 
     init {
-        setText(template.getStyled(red))
+        setText(template.getStyled(unfilledTextColor))
         addTextChangedListener(watcher)
     }
 
@@ -76,7 +76,30 @@ class MaskedDateEditText @JvmOverloads constructor(
     }
 
     private inner class Watcher : TextWatcher {
+
         private var locked = false
+
+        override fun beforeTextChanged(
+            s: CharSequence,
+            start: Int,
+            count: Int,
+            after: Int
+        ) = Unit
+
+        override fun onTextChanged(
+            s: CharSequence,
+            start: Int,
+            before: Int,
+            count: Int
+        ) {
+            if (tryLock()) {
+                try {
+                    template.apply(s, start, before, count)
+                } finally {
+                    unlock()
+                }
+            }
+        }
 
         override fun afterTextChanged(s: Editable) {
             if (tryLock()) {
@@ -84,20 +107,8 @@ class MaskedDateEditText @JvmOverloads constructor(
                     s.filters = arrayOf()
                     s.getSpans(0, s.length, ForegroundColorSpan::class.java)
                         .forEach { s.removeSpan(it) }
-                    s.replace(0, s.length, template.getStyled(red))
+                    s.replace(0, s.length, template.getStyled(unfilledTextColor))
                     setSelection(template.position)
-                } finally {
-                    unlock()
-                }
-            }
-        }
-
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) = Unit
-
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            if (tryLock()) {
-                try {
-                    template.apply(s, start, before, count)
                 } finally {
                     unlock()
                 }
@@ -115,16 +126,20 @@ class MaskedDateEditText @JvmOverloads constructor(
     }
 
     class TemplateString(private val template: Array<Symbol>) {
+
         var position: Int = 0
             private set
 
         fun getLastPosition(): Int {
             var field = 0
             while (field < template.size && template[field].value != null) field++
+
             return field
         }
 
-        fun getStyled(foregroundColor: Int): CharSequence {
+        fun getStyled(
+            foregroundColor: Int
+        ): CharSequence {
             val str = SpannableStringBuilder()
             template.forEachIndexed { index, symbol ->
                 val ch = symbol.value
@@ -133,6 +148,7 @@ class MaskedDateEditText @JvmOverloads constructor(
                     str.setSpan(ForegroundColorSpan(foregroundColor), index, index + 1, 0)
                 }
             }
+
             return str
         }
 
@@ -154,7 +170,10 @@ class MaskedDateEditText @JvmOverloads constructor(
 
         override fun toString(): String {
             val str = StringBuilder(11)
-            template.forEach { symbol -> symbol.value?.let { str.append(it) } ?: return@forEach }
+            template.forEach { symbol ->
+                symbol.value?.let { str.append(it) } ?: return@forEach
+            }
+
             return str.toString()
         }
 
@@ -268,6 +287,10 @@ class MaskedDateEditText @JvmOverloads constructor(
 
         sealed class Symbol(val mask: Char) {
 
+            abstract var value: Char?
+
+            abstract fun accepts(char: Char): Boolean
+
             class Placeholder(char: Char) : Symbol(char) {
                 override var value: Char? = char
                     set(value) {
@@ -286,9 +309,6 @@ class MaskedDateEditText @JvmOverloads constructor(
 
                 override fun accepts(char: Char) = char.isDigit()
             }
-
-            abstract var value: Char?
-            abstract fun accepts(char: Char): Boolean
         }
 
         fun getText(): String {

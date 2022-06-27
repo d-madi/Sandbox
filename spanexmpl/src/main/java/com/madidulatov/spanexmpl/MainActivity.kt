@@ -15,7 +15,6 @@ import kotlin.properties.Delegates
 class MainActivity : AppCompatActivity() {
 
     private var textview: TextView by Delegates.notNull()
-    private var maskedEdittext: MaskedDateEditText by Delegates.notNull()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +32,5 @@ class MainActivity : AppCompatActivity() {
         textview.text = spannable
         val text = "<p>Привет, <b>Мир</b>!</p>"
         textview.text = Html.fromHtml(text)
-        maskedEdittext = findViewById(R.id.date_edittext)
     }
 }
